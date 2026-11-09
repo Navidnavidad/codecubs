@@ -26,7 +26,7 @@ h1{font-size:20px;margin:0 0 18px;display:flex;justify-content:space-between;ali
 .card h2{font-size:14px;margin:0 0 12px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
 .kpi .l{color:var(--muted);font-weight:600}.kpi .v{font-size:22px;font-weight:700;margin-top:4px}
-.cols{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.cols{display:grid;grid-template-columns:2.2fr 1fr;gap:16px;align-items:start}
 table{width:100%;border-collapse:collapse}
 th{text-align:left;color:var(--muted);font-weight:600;padding:8px;border-bottom:1px solid var(--line);background:#f7f7f7}
 td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
@@ -44,13 +44,17 @@ td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
 input.inl{width:80px;padding:5px 8px;border:1px solid #c9c9c9;border-radius:6px;font-family:inherit}
 .view{display:none}.view.on{display:block}
 .ok{color:var(--green);font-weight:700}
+.demo{background:#fff1c2;color:#5e4200;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;margin-left:10px}
+.chart svg{width:100%;height:auto;display:block}
+.chart .ax{font-size:12px;fill:#616161}
+.delta{color:var(--green);font-size:12px;font-weight:600;margin-left:6px}
 </style>
 </head>
 <body>
 <div class="top">
   <div class="brand">
     <svg viewBox="0 0 64 64"><circle cx="16" cy="14" r="10" fill="#f59e0b"/><circle cx="48" cy="14" r="10" fill="#f59e0b"/><circle cx="32" cy="36" r="26" fill="#2563eb"/></svg>
-    CodeCubs Academy · Admin
+    CodeCubs Academy · Admin<span class="demo">MVP demo · sample data</span>
   </div>
   <div class="search">🔍 Search products, orders, customers</div>
   <div class="me"><span id="ownerTop"></span><div class="av">MN</div></div>
@@ -58,7 +62,7 @@ input.inl{width:80px;padding:5px 8px;border:1px solid #c9c9c9;border-radius:6px;
 <div class="shell">
 <aside id="nav">
   <a data-v="home" class="on">🏠 Home</a>
-  <a data-v="orders">📥 Orders <span style="margin-left:auto;color:var(--muted)">0</span></a>
+  <a data-v="orders">📥 Orders <span style="margin-left:auto;color:var(--muted)" id="navOrders"></span></a>
   <a data-v="products">🏷️ Products</a>
   <a data-v="customers">👤 Customers</a>
   <a data-v="analytics">📊 Analytics</a>
@@ -72,18 +76,13 @@ input.inl{width:80px;padding:5px 8px;border:1px solid #c9c9c9;border-radius:6px;
 <div class="view on" id="v-home">
   <h1><span>Welcome back, <span id="ownerFirst"></span></span><a class="btn l" href="shop.html" target="_blank" style="text-decoration:none;font-size:14px">View your store ↗</a></h1>
   <div class="kpis">
-    <div class="card kpi"><div class="l">Total sales</div><div class="v">$0.00</div></div>
-    <div class="card kpi"><div class="l">Orders</div><div class="v">0</div></div>
-    <div class="card kpi"><div class="l">Active products</div><div class="v" id="kProducts"></div></div>
-    <div class="card kpi"><div class="l">Books in stock</div><div class="v" id="kStock"></div></div>
+    <div class="card kpi"><div class="l">Total sales (2026)</div><div class="v" id="kSales"></div></div>
+    <div class="card kpi"><div class="l">Orders</div><div class="v" id="kOrders"></div></div>
+    <div class="card kpi"><div class="l">Average order value</div><div class="v" id="kAov"></div></div>
+    <div class="card kpi"><div class="l">Customers</div><div class="v" id="kCust"></div></div>
   </div>
   <div class="cols">
-    <div class="card"><h2>Setup guide</h2>
-      <div class="task"><span class="ok">✔</span><div><b>Create your online store</b><br><span style="color:var(--muted)">Home page, About section and Shop are live on GitHub Pages.</span></div></div>
-      <div class="task"><span class="ok">✔</span><div><b>Add products</b><br><span style="color:var(--muted)"><span id="pc"></span> products added (books and tutoring packs).</span></div></div>
-      <div class="task"><span>○</span><div><b>Set up payments</b><br><span style="color:var(--muted)">Connect a payment provider (for example Stripe Payment Links) to start taking orders.</span></div></div>
-      <div class="task"><span>○</span><div><b>Add a custom domain</b><br><span style="color:var(--muted)">Optional. GitHub Pages supports custom domains for free.</span></div></div>
-    </div>
+    <div class="card chart"><h2>Sales over time, Jan to Dec 2026 (AUD)</h2><div id="chart"></div></div>
     <div class="card"><h2>Store details</h2>
       <dl class="dl" style="grid-template-columns:90px 1fr">
         <dt>Store</dt><dd id="sName"></dd>
@@ -97,10 +96,8 @@ input.inl{width:80px;padding:5px 8px;border:1px solid #c9c9c9;border-radius:6px;
 
 <div class="view" id="v-orders">
   <h1>Orders</h1>
-  <div class="card empty">
-    <svg viewBox="0 0 100 80"><rect x="10" y="10" width="80" height="60" rx="8" fill="#ddd"/><rect x="22" y="24" width="56" height="6" rx="3" fill="#bbb"/><rect x="22" y="38" width="40" height="6" rx="3" fill="#bbb"/></svg>
-    <h3 style="color:var(--ink)">Your orders will show here</h3>
-    <p>No orders yet. Orders appear here once payments are connected and customers check out.</p>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table><thead><tr><th>Order</th><th>Date</th><th>Items</th><th>Payment</th><th>Fulfilment</th><th>Total</th></tr></thead><tbody id="otable"></tbody></table>
   </div>
 </div>
 
@@ -114,12 +111,12 @@ input.inl{width:80px;padding:5px 8px;border:1px solid #c9c9c9;border-radius:6px;
 
 <div class="view" id="v-customers">
   <h1>Customers</h1>
-  <div class="card empty"><h3 style="color:var(--ink)">No customers yet</h3><p>Customer details appear here after the first order.</p></div>
+  <div class="card"><dl class="dl"><dt>Total customers</dt><dd id="c1"></dd><dt>Returning customers</dt><dd>41%</dd><dt>Top product</dt><dd>Starter Pack: 4 Lessons</dd></dl></div>
 </div>
 
 <div class="view" id="v-analytics">
   <h1>Analytics</h1>
-  <div class="card empty"><h3 style="color:var(--ink)">Not enough data yet</h3><p>Sales reports will appear once the store starts taking orders.</p></div>
+  <div class="card chart"><h2>Sales over time, Jan to Dec 2026 (AUD)</h2><div id="chart2"></div></div>
 </div>
 
 <div class="view" id="v-settings">
@@ -143,7 +140,7 @@ input.inl{width:80px;padding:5px 8px;border:1px solid #c9c9c9;border-radius:6px;
     </dl>
   </div>
   <div class="card"><h2>Payments</h2>
-    <dl class="dl"><dt>Payment provider</dt><dd><span class="badge y">Not connected</span></dd></dl>
+    <dl class="dl"><dt>Payment provider</dt><dd>Stripe <span class="badge y">Demo</span></dd></dl>
   </div>
 </div>
 
@@ -160,9 +157,36 @@ $('ownerFirst').textContent = STORE.owner.split(' ').slice(0,2).join(' ');
 ['sUrl','s2Url'].forEach(i => { $(i).textContent = STORE.url.replace('https://',''); $(i).href = STORE.url; });
 $('s2Repo').textContent = STORE.repo.replace('https://',''); $('s2Repo').href = STORE.repo;
 $('s2Loc').textContent = STORE.location; $('s2Cur').textContent = STORE.currency;
+// Hypothetical MVP sample figures
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const SALES=[1650,1820,2140,2480,2390,2760,3420,3050,3380,3890,4120,4540];
+const ORDERS=524, CUSTOMERS=312;
+const total=SALES.reduce((a,b)=>a+b,0);
+const fmt=n=>"$"+n.toLocaleString("en-AU",{minimumFractionDigits:2,maximumFractionDigits:2});
 function stats(){
-  $('kProducts').textContent = PRODUCTS.length; $('pc').textContent = PRODUCTS.length;
-  $('kStock').textContent = PRODUCTS.filter(p=>p.type==='Book').reduce((a,p)=>a+p.stock,0);
+  $('kSales').innerHTML=fmt(total);
+  $('kOrders').textContent=ORDERS; $('navOrders').textContent=ORDERS;
+  $('kAov').textContent=fmt(total/ORDERS);
+  $('kCust').textContent=CUSTOMERS; $('c1').textContent=CUSTOMERS;
+}
+function chart(el){
+  const W=760,H=300,L=64,R=20,T=16,B=40,max=5000,w=W-L-R,h=H-T-B;
+  const x=i=>L+i*w/11, y=v=>T+h-v/max*h;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly sales 2026">`;
+  for(let v=0;v<=max;v+=1000){s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#e3e3e3"/><text class="ax" x="${L-10}" y="${y(v)+4}" text-anchor="end">$${(v/1000)}k</text>`;}
+  MONTHS.forEach((m,i)=>s+=`<text class="ax" x="${x(i)}" y="${H-B+22}" text-anchor="middle">${m}</text>`);
+  s+=`<line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="#8a8a8a"/>`;
+  const pts=SALES.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+  s+=`<polygon points="${x(0)},${y(0)} ${pts} ${x(11)},${y(0)}" fill="#2563eb" opacity=".08"/>`;
+  s+=`<polyline points="${pts}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linejoin="round"/>`;
+  SALES.forEach((v,i)=>s+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="#fff" stroke="#2563eb" stroke-width="2"><title>${MONTHS[i]}: ${fmt(v)}</title></circle>`);
+  s+=`<text class="ax" x="${x(11)}" y="${y(SALES[11])-12}" text-anchor="end" style="fill:#303030;font-weight:600">${fmt(SALES[11])}</text>`;
+  s+=`<text class="ax" transform="translate(14 ${T+h/2}) rotate(-90)" text-anchor="middle">Sales (AUD)</text>`;
+  el.innerHTML=s+`</svg>`;
+}
+function orders(){
+  const rows=[["#1524","8 Dec","Holiday Coding Camp (5 days)",249],["#1523","8 Dec","My First Python Adventure × 2",49.90],["#1522","7 Dec","Starter Pack: 4 Lessons",179],["#1521","7 Dec","Game Makers Club",29.95],["#1520","6 Dec","1:1 Online Lesson (45 min)",49],["#1519","6 Dec","Scratch Space Quest, Robots, Logic & Puzzles",41.90],["#1518","5 Dec","Starter Pack: 4 Lessons",179],["#1517","5 Dec","Build Your Own Website",27.95]];
+  $('otable').innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td><span class="badge g">Paid</span></td><td><span class="badge">${r[2].includes('Lesson')||r[2].includes('Camp')?'Scheduled':'Fulfilled'}</span></td><td>${fmt(r[3])}</td></tr>`).join('');
 }
 function table(){
   $('ptable').innerHTML = PRODUCTS.map((p,i) => `<tr>
@@ -174,18 +198,18 @@ function table(){
     <td><input class="inl" type="number" step="0.01" min="0" value="${p.price.toFixed(2)}" data-i="${i}" data-k="price"></td>
   </tr>`).join('');
 }
-$('ptable').oninput = e => { const t=e.target; if(!t.dataset.k) return; PRODUCTS[t.dataset.i][t.dataset.k] = parseFloat(t.value)||0; stats(); };
+$('ptable').oninput = e => { const t=e.target; if(!t.dataset.k) return; PRODUCTS[t.dataset.i][t.dataset.k] = parseFloat(t.value)||0; };
 $('addP').onclick = () => {
   const title = prompt("Product title"); if(!title) return;
   PRODUCTS.push({id:"N"+(PRODUCTS.length+1),type:"Book",title,ages:"6-16",price:19.95,stock:0,color:"#64748b",accent:"#e2e8f0",icon:"py",desc:""});
-  table(); stats();
+  table();
 };
 $('nav').onclick = e => {
   const a = e.target.closest('a[data-v]'); if(!a) return;
   document.querySelectorAll('#nav a').forEach(x=>x.classList.toggle('on',x===a));
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+a.dataset.v));
 };
-stats(); table();
+stats(); table(); orders(); chart($('chart')); chart($('chart2'));
 </script>
 </body>
 </html>
