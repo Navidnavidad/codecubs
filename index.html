@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CodeCubs Academy | Online Coding Tutoring & Coding Books for Kids</title>
+<meta name="description" content="CodeCubs Academy offers live online coding lessons and fun coding books for children aged 6 to 16. Founded by Mohamed Naveed Mohamed Rafi.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='16' cy='14' r='10' fill='%23f59e0b'/%3E%3Ccircle cx='48' cy='14' r='10' fill='%23f59e0b'/%3E%3Ccircle cx='32' cy='36' r='26' fill='%232563eb'/%3E%3C/svg%3E">
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <a class="logo" href="./">
+    <svg viewBox="0 0 64 64"><circle cx="16" cy="14" r="10" fill="#f59e0b"/><circle cx="48" cy="14" r="10" fill="#f59e0b"/><circle cx="32" cy="36" r="26" fill="#2563eb"/><text x="32" y="44" font-size="20" text-anchor="middle" fill="#fff" font-family="monospace" font-weight="700">&lt;/&gt;</text></svg>
+    <span>Code<b>Cubs</b> Academy</span>
+  </a>
+  <nav><a href="./" class="active">Home</a><a href="#about">About</a><a href="#tutoring">Tutoring</a><a href="shop.html">Shop</a></nav>
+</div></header>
+
+<div class="hero"><div class="wrap">
+  <div>
+    <h1>Where curious kids become <em>confident coders</em></h1>
+    <p>Live online coding lessons and colourful coding books for children aged 6 to 16. Scratch, Python, web design and game making, taught one friendly step at a time.</p>
+    <div class="cta"><a class="btn" href="shop.html">Visit the Shop</a><a class="btn ghost" href="#tutoring">Book a Lesson</a></div>
+  </div>
+  <div class="hero-art">
+    <div class="dots"><i></i><i></i><i></i></div>
+<pre style="margin:0;white-space:pre-wrap"><span class="c"># my_first_game.py</span>
+<span class="k">name</span> = <span class="s">"Cub"</span>
+<span class="k">for</span> level <span class="k">in</span> range(1, 4):
+    print(<span class="s">"Level"</span>, level, <span class="s">"cleared!"</span>)
+print(<span class="s">"Great job,"</span>, name)</pre>
+  </div>
+</div></div>
+
+<section id="tutoring"><div class="wrap">
+  <h2>What we offer</h2>
+  <p class="sub">Two ways to learn: live tutoring with a real teacher, and books kids can explore at their own pace.</p>
+  <div class="grid3">
+    <div class="feature"><div class="ico" style="background:#dbeafe">💻</div><h3>Live online tutoring</h3><p>One-on-one and small-group video lessons matched to each child's age and level. Lessons are planned around projects kids are excited to build.</p></div>
+    <div class="feature"><div class="ico" style="background:#fef3c7">📚</div><h3>Coding books for kids</h3><p>Full-colour books written for young learners, from unplugged logic puzzles to real Python and HTML projects.</p></div>
+    <div class="feature"><div class="ico" style="background:#dcfce7">🏆</div><h3>Projects and certificates</h3><p>Every course ends with a finished project kids can show off, plus a printable certificate to celebrate their progress.</p></div>
+  </div>
+</div></section>
+
+<section class="about" id="about"><div class="wrap">
+  <div class="avatar">MN</div>
+  <div>
+    <h2>About CodeCubs Academy</h2>
+    <p class="role">Founded by Mohamed Naveed Mohamed Rafi</p>
+    <p>CodeCubs Academy was founded by <strong>Mohamed Naveed Mohamed Rafi</strong> with a simple belief: every child can learn to code when lessons are patient, playful and built around things they love. What began as helping family and friends with their first programs has grown into an online academy that pairs live tutoring with books kids can keep learning from long after a lesson ends.</p>
+    <p>Our tutoring covers Scratch for younger learners, then Python, web design and game development as students grow. Our books are written to match those same steps, so children can practise between lessons or start on their own. We keep classes small, explain ideas without jargon, and celebrate every bug fixed along the way.</p>
+    <p>Our mission is to give children the confidence to create with technology, not just use it.</p>
+    <div class="stats"><div><b>Ages 6 to 16</b>Learners we teach</div><div><b>100% online</b>Learn from home</div><div><b>Small groups</b>Max 6 per class</div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Popular in the shop</h2>
+  <p class="sub">Coding books and lesson packs our families love.</p>
+  <div class="products" id="featured"></div>
+  <p style="text-align:center;margin-top:32px"><a class="btn alt" href="shop.html">See everything in the shop</a></p>
+</div></section>
+
+<footer><div class="wrap">
+  <div><strong style="color:#fff">CodeCubs Academy</strong><br>Online coding tutoring and coding books for kids.<br>Founder: Mohamed Naveed Mohamed Rafi</div>
+  <div><a href="./">Home</a> · <a href="#about">About</a> · <a href="shop.html">Shop</a><br>© <span id="y"></span> CodeCubs Academy. All rights reserved.</div>
+</div></footer>
+
+<script src="products.js"></script>
+<script>
+document.getElementById('y').textContent = new Date().getFullYear();
+document.getElementById('featured').innerHTML = PRODUCTS.filter(p => ["B001","B002","B003","T002"].includes(p.id)).map(p => `
+  <div class="card"><div class="cover">${coverSVG(p)}</div><div class="body">
+    <div><span class="tag ${p.type==='Tutoring'?'t':''}">${p.type}</span><span class="tag">Ages ${p.ages}</span></div>
+    <h3>${p.title}</h3><p>${p.desc}</p>
+    <div class="row"><span class="price">${money(p.price)}</span><a class="add" style="text-decoration:none" href="shop.html">View</a></div>
+  </div></div>`).join('');
+</script>
+</body>
+</html>

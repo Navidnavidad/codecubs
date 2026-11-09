@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop | CodeCubs Academy</title>
+<meta name="description" content="Coding books for kids and online coding lesson packs from CodeCubs Academy.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='16' cy='14' r='10' fill='%23f59e0b'/%3E%3Ccircle cx='48' cy='14' r='10' fill='%23f59e0b'/%3E%3Ccircle cx='32' cy='36' r='26' fill='%232563eb'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="banner">Free shipping on Australian book orders over $50 · New lesson packs available now</div>
+<header class="site"><div class="wrap">
+  <a class="logo" href="./">
+    <svg viewBox="0 0 64 64"><circle cx="16" cy="14" r="10" fill="#f59e0b"/><circle cx="48" cy="14" r="10" fill="#f59e0b"/><circle cx="32" cy="36" r="26" fill="#2563eb"/><text x="32" y="44" font-size="20" text-anchor="middle" fill="#fff" font-family="monospace" font-weight="700">&lt;/&gt;</text></svg>
+    <span>Code<b>Cubs</b> Academy</span>
+  </a>
+  <nav><a href="./">Home</a><a href="./#about">About</a><a href="shop.html" class="active">Shop</a><button class="cartbtn" id="cartbtn">🛒 Cart<span class="n" id="count">0</span></button></nav>
+</div></header>
+
+<div class="shop-hero"><div class="wrap">
+  <h1>The CodeCubs Shop</h1>
+  <p class="sub" style="margin-bottom:28px">Coding books for young learners and live online lesson packs, all in one place.</p>
+  <div class="filters" id="filters">
+    <button class="on" data-f="All">All</button><button data-f="Book">Books</button><button data-f="Tutoring">Tutoring</button>
+  </div>
+</div></div>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="products" id="grid"></div>
+  <div class="trust"><span>🔒 Secure checkout</span><span>📦 Ships across Australia</span><span>💬 Friendly support</span><span>⭐ Made for kids 6 to 16</span></div>
+</div></section>
+
+<aside class="drawer" id="drawer">
+  <h3>Your cart <button class="x" id="close">×</button></h3>
+  <div class="items" id="items"></div>
+  <div class="foot">
+    <div style="display:flex;justify-content:space-between;font-weight:800;font-size:18px;margin-bottom:14px"><span>Subtotal</span><span id="sub">$0.00</span></div>
+    <button class="btn" style="width:100%" id="checkout">Checkout</button>
+    <p id="note" style="color:var(--muted);font-size:13px;margin:10px 0 0"></p>
+  </div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<footer><div class="wrap">
+  <div><strong style="color:#fff">CodeCubs Academy</strong><br>Online coding tutoring and coding books for kids.<br>Founder: Mohamed Naveed Mohamed Rafi</div>
+  <div><a href="./">Home</a> · <a href="./#about">About</a> · <a href="shop.html">Shop</a><br>© <span id="y"></span> CodeCubs Academy. All rights reserved.</div>
+</div></footer>
+
+<script src="products.js"></script>
+<script>
+document.getElementById('y').textContent = new Date().getFullYear();
+const cart = {};
+let filter = "All";
+function render() {
+  document.getElementById('grid').innerHTML = PRODUCTS.filter(p => filter === "All" || p.type === filter).map(p => `
+    <div class="card"><div class="cover">${coverSVG(p)}</div><div class="body">
+      <div><span class="tag ${p.type==='Tutoring'?'t':''}">${p.type}</span><span class="tag">Ages ${p.ages}</span></div>
+      <h3>${p.title}</h3><p>${p.desc}</p>
+      <div class="row"><span class="price">${money(p.price)}</span><button class="add" data-id="${p.id}">Add to cart</button></div>
+    </div></div>`).join('');
+}
+function renderCart() {
+  const ids = Object.keys(cart);
+  let total = 0, n = 0;
+  document.getElementById('items').innerHTML = ids.length ? ids.map(id => {
+    const p = PRODUCTS.find(x => x.id === id); total += p.price * cart[id]; n += cart[id];
+    return `<div class="item"><div><strong>${p.title}</strong><br><small>${cart[id]} × ${money(p.price)}</small></div>
+      <button class="x" data-rm="${id}" title="Remove">−</button></div>`;
+  }).join('') : '<p style="color:var(--muted)">Your cart is empty.</p>';
+  document.getElementById('sub').textContent = money(total);
+  document.getElementById('count').textContent = n;
+}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1600);}
+document.getElementById('filters').onclick = e => {
+  if (!e.target.dataset.f) return;
+  filter = e.target.dataset.f;
+  document.querySelectorAll('#filters button').forEach(b => b.classList.toggle('on', b === e.target));
+  render();
+};
+document.getElementById('grid').onclick = e => {
+  const id = e.target.dataset.id; if (!id) return;
+  cart[id] = (cart[id] || 0) + 1; renderCart(); toast("Added to cart");
+};
+document.getElementById('items').onclick = e => {
+  const id = e.target.dataset.rm; if (!id) return;
+  if (--cart[id] <= 0) delete cart[id]; renderCart();
+};
+const drawer = document.getElementById('drawer');
+document.getElementById('cartbtn').onclick = () => drawer.classList.add('open');
+document.getElementById('close').onclick = () => drawer.classList.remove('open');
+document.getElementById('checkout').onclick = () => {
+  document.getElementById('note').textContent = Object.keys(cart).length
+    ? "Online payments are being set up. We'll be taking orders very soon!"
+    : "Add something to your cart first.";
+};
+render(); renderCart();
+</script>
+</body>
+</html>
