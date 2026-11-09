@@ -78,13 +78,13 @@ input.inl{width:80px;padding:5px 8px;border:1px solid #c9c9c9;border-radius:6px;
 <div class="view on" id="v-home">
   <h1><span>Welcome back, <span id="ownerFirst"></span></span><a class="btn l" href="shop.html" target="_blank" style="text-decoration:none;font-size:14px">View your store ↗</a></h1>
   <div class="kpis">
-    <div class="card kpi"><div class="l">Total sales (2026)</div><div class="v" id="kSales"></div></div>
+    <div class="card kpi"><div class="l">Total sales (last 12 months)</div><div class="v" id="kSales"></div></div>
     <div class="card kpi"><div class="l">Orders</div><div class="v" id="kOrders"></div></div>
     <div class="card kpi"><div class="l">Average order value</div><div class="v" id="kAov"></div></div>
     <div class="card kpi"><div class="l">Customers</div><div class="v" id="kCust"></div></div>
   </div>
   <div class="cols">
-    <div class="card chart"><h2>Sales over time, Jan to Dec 2026 (AUD)</h2><div id="chart"></div></div>
+    <div class="card chart"><h2>Sales over time, last 12 months: Nov 2025 to Oct 2026 (AUD)</h2><div id="chart"></div></div>
     <div class="card"><h2>Store details</h2>
       <dl class="dl" style="grid-template-columns:90px 1fr">
         <dt>Store</dt><dd id="sName"></dd>
@@ -118,7 +118,7 @@ input.inl{width:80px;padding:5px 8px;border:1px solid #c9c9c9;border-radius:6px;
 
 <div class="view" id="v-analytics">
   <h1>Analytics</h1>
-  <div class="card chart"><h2>Sales over time, Jan to Dec 2026 (AUD)</h2><div id="chart2"></div></div>
+  <div class="card chart"><h2>Sales over time, last 12 months: Nov 2025 to Oct 2026 (AUD)</h2><div id="chart2"></div></div>
 </div>
 
 <div class="view" id="v-settings">
@@ -160,7 +160,7 @@ $('ownerFirst').textContent = STORE.owner.split(' ').slice(0,2).join(' ');
 $('s2Repo').textContent = STORE.repo.replace('https://',''); $('s2Repo').href = STORE.repo;
 $('s2Loc').textContent = STORE.location; $('s2Cur').textContent = STORE.currency;
 // Hypothetical MVP sample figures
-const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTHS=["Nov 25","Dec","Jan 26","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct"];
 const SALES=[1650,1820,2140,2480,2390,2760,3420,3050,3380,3890,4120,4540];
 const ORDERS=524, CUSTOMERS=312;
 const total=SALES.reduce((a,b)=>a+b,0);
@@ -174,7 +174,7 @@ function stats(){
 function chart(el){
   const W=760,H=300,L=64,R=20,T=16,B=40,max=5000,w=W-L-R,h=H-T-B;
   const x=i=>L+i*w/11, y=v=>T+h-v/max*h;
-  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly sales 2026">`;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly sales, last 12 months">`;
   for(let v=0;v<=max;v+=1000){s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#e3e3e3"/><text class="ax" x="${L-10}" y="${y(v)+4}" text-anchor="end">$${(v/1000)}k</text>`;}
   MONTHS.forEach((m,i)=>s+=`<text class="ax" x="${x(i)}" y="${H-B+22}" text-anchor="middle">${m}</text>`);
   s+=`<line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="#8a8a8a"/>`;
@@ -187,7 +187,7 @@ function chart(el){
   el.innerHTML=s+`</svg>`;
 }
 function orders(){
-  const rows=[["#1524","8 Dec","Holiday Coding Camp (5 days)",249],["#1523","8 Dec","My First Python Adventure × 2",49.90],["#1522","7 Dec","Starter Pack: 4 Lessons",179],["#1521","7 Dec","Game Makers Club",29.95],["#1520","6 Dec","1:1 Online Lesson (45 min)",49],["#1519","6 Dec","Scratch Space Quest, Robots, Logic & Puzzles",41.90],["#1518","5 Dec","Starter Pack: 4 Lessons",179],["#1517","5 Dec","Build Your Own Website",27.95]];
+  const rows=[["#1524","9 Nov","Holiday Coding Camp (5 days)",249],["#1523","8 Nov","My First Python Adventure × 2",49.90],["#1522","7 Nov","Starter Pack: 4 Lessons",179],["#1521","6 Nov","Game Makers Club",29.95],["#1520","5 Nov","1:1 Online Lesson (45 min)",49],["#1519","4 Nov","Scratch Space Quest, Robots, Logic & Puzzles",41.90],["#1518","3 Nov","Starter Pack: 4 Lessons",179],["#1517","2 Nov","Build Your Own Website",27.95]];
   $('otable').innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td><span class="badge g">Paid</span></td><td><span class="badge">${r[2].includes('Lesson')||r[2].includes('Camp')?'Scheduled':'Fulfilled'}</span></td><td>${fmt(r[3])}</td></tr>`).join('');
 }
 function table(){
